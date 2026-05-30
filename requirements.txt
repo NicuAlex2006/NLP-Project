@@ -1,0 +1,40 @@
+# =====================================================================
+# NLP Search Agent — Python dependencies
+# Tested with Python 3.11. For CUDA training, install a CUDA build of
+# torch FIRST (see scripts/setup_cloud.sh) before running this file.
+# =====================================================================
+
+# --- Core deep-learning stack ---
+torch>=2.1
+transformers>=4.40
+datasets>=2.18
+tokenizers>=0.15
+accelerate>=0.26
+sentencepiece>=0.1.99
+peft>=0.10                 # LoRA adapters for training/train.py
+numpy
+tqdm
+
+# --- LLM clients (cloud agent) ---
+langchain>=0.2
+langchain-core>=0.2
+langchain-groq>=0.1
+langchain-ollama>=0.1
+
+# --- Tool layer ---
+tavily-python>=0.3         # primary web search
+duckduckgo-search>=6.0     # free fallback search
+trafilatura>=1.8           # main-content extraction
+requests>=2.31
+beautifulsoup4>=4.12       # trafilatura fallback parsing
+lxml>=5.0
+
+# --- API + UI ---
+fastapi>=0.110
+uvicorn[standard]>=0.27
+pydantic>=2.5
+streamlit>=1.30
+python-dotenv>=1.0
+
+# --- Evaluation / testing ---
+pytest>=8.0

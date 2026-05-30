@@ -1,0 +1,26 @@
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+venv/
+.venv/
+env/
+.git/
+.gitignore
+.DS_Store
+.idea/
+.vscode/
+.claude/
+graphify-out/
+docs/
+tests/
+scripts/
+*.md
+training/checkpoints/
+training/finetuned_*/   # mounted as volumes instead of being copied
+training/dataset.json
+evaluation/results.csv
+API.env
+.env

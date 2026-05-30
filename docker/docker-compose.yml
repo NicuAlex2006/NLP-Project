@@ -1,0 +1,59 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    container_name: nlp-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../API.env
+    environment:
+      # Override the host-side default so the API can reach the ollama service below.
+      OLLAMA_BASE_URL: http://ollama:11434
+    volumes:
+      # Mount the model artifacts read-only so the from-scratch and fine-tuned
+      # agents can load weights without baking gigabytes into the image.
+      - ../training/finetuned_model:/app/training/finetuned_model:ro
+      - ../training/finetuned_distilbart:/app/training/finetuned_distilbart:ro
+      - ../training/finetuned_flan-t5:/app/training/finetuned_flan-t5:ro
+    restart: unless-stopped
+    networks:
+      - nlp-net
+
+  ui:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.ui
+    container_name: nlp-ui
+    ports:
+      - "8501:8501"
+    environment:
+      API_URL: http://api:8000
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - nlp-net
+
+  # Optional: uncomment to run the Mistral model locally via Ollama.
+  # First pull the model into the volume:
+  #   docker compose -f docker/docker-compose.yml exec ollama ollama pull mistral
+  ollama:
+    image: ollama/ollama:latest
+    container_name: nlp-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+    networks:
+      - nlp-net
+    profiles: ["ollama"]   # disabled by default; enable with `--profile ollama`
+
+networks:
+  nlp-net:
+    driver: bridge
+
+volumes:
+  ollama-data:
